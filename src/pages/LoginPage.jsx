@@ -22,7 +22,7 @@ const LoginPage = () => {
     <div className='min-h-screen w-full flex flex-col justify-center relative bg-[#56A3A6]'>
       <form className='h-[70vh] w-4/12 mx-auto flex flex-col rounded-2xl bg-[#26547C]'>
         <h1 className='h-fit w-full text-3xl text-center flex flex-row items-center justify-center font-semibold italic mt-8 text-[#D7FFAB]'>
-          <img src="src/assets/cu-logo.png" alt="" className='h-16 w-16'/>CUPrint
+          <img src="/assets/cu-logo.png" alt="" className='h-16 w-16'/>CUPrint
         </h1>
         <div className='h-fit w-4/5 mx-auto mt-10 flex flex-row items-center justify-between'>
           <label htmlFor="matric" className='text-[#D7FFAB]'>Matric No:</label>
