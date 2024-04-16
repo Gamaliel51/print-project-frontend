@@ -52,7 +52,7 @@ const ProfileInfo = () => {
         }
 
         setErrorMsg('')
-        axios.post(`http://localhost:8000/auth/update`, {username: matric, password: password, email: email}, config)
+        axios.post(`${domain}/auth/update`, {username: matric, password: password, email: email}, config)
         .then((response) => {
             if(response.data.status === "success"){
                 logout()
@@ -90,7 +90,7 @@ const ProfileInfo = () => {
                 'Authorization': `Bearer ${sessionStorage.getItem('accessToken')}`,
             }
           }
-          axios.get(`http://localhost:8000/studentinfo`, config)
+          axios.get(`${domain}/studentinfo`, config)
           .then((res) => {
             console.log(res.data)
             if(res.data.status === "success"){

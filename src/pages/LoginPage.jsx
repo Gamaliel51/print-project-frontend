@@ -35,7 +35,7 @@ const LoginPage = () => {
       return
     } 
 
-    axios.post(`http://localhost:8000/auth/login`, {username: matric, password: password})
+    axios.post(`${domain}/auth/login`, {username: matric, password: password})
       .then((res) => {
         console.log("HERE", res.data)
           if(res.data.accessToken){

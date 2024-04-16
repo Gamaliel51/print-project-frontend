@@ -53,7 +53,7 @@ const Dashboard = () => {
             'Authorization': `Bearer ${sessionStorage.getItem('accessToken')}`,
         }
       }
-      axios.get(`http://localhost:8000/studentinfo`, config)
+      axios.get(`${domain}/studentinfo`, config)
       .then((res) => {
         console.log(res.data)
         if(res.data.status === "success"){

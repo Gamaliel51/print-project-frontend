@@ -44,7 +44,7 @@ const Print = (props) => {
     if(file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'){
       const formData = new FormData()
       formData.append('files', file)
-      const response = await axios.post(`http://localhost:8000/getpagenum`, formData)
+      const response = await axios.post(`${domain}/getpagenum`, formData)
       const page = response.data.num
       setPageNum(page)
       setCost(page * 50)
@@ -63,7 +63,7 @@ const Print = (props) => {
     const formData = new FormData()
     formData.append('matric', matric)
     formData.append('files', file)
-    const response = await axios.post(`http://localhost:8000/printdoc`, formData, config)
+    const response = await axios.post(`${domain}/printdoc`, formData, config)
     if(response.data.status === "success"){
       window.location.reload()
     }

@@ -39,7 +39,7 @@ const SignupPage = () => {
         }
 
         setErrorMsg('')
-        axios.post(`http://localhost:8000/auth/signup`, {username: matric, password: password, email: email})
+        axios.post(`${domain}/auth/signup`, {username: matric, password: password, email: email})
         .then((response) => {
             if(response.data.status === "success"){
                 navigate('/login')
