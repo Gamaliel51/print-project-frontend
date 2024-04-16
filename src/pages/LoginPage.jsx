@@ -1,5 +1,7 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import {  useNavigate } from "react-router-dom";
+import { checkAuth } from "../components/utils";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -8,6 +10,14 @@ const LoginPage = () => {
     matric: '', password: ''
   });
   const [errorMsg, setErrorMsg] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [domain, setDomain] = useState('')
+
+  const matricPattern = /2[0-9]c[abcdefgh]02[0-9][0-9][0-9][0-9]/i
+
+  const signupnav = () => {
+    navigate('/signup')
+  }
 
   const handleChhange = (e) => {
     const {name, value} = e.target
@@ -20,17 +30,57 @@ const LoginPage = () => {
 
     const {matric,password} = formData
 
-    if (matric.length < 3){
-      setErrorMsg('Matric number must be longer than 3 characters')
+    if(!matricPattern.test(matric)){
+      setErrorMsg('Invalid Matric')
       return
     } 
-    if(password.length < 6){
-      setErrorMsg('Passowrd too short')
-      return
-    }
-      navigate("/dashboard");
+
+    axios.post(`http://localhost:8000/auth/login`, {username: matric, password: password})
+      .then((res) => {
+        console.log("HERE", res.data)
+          if(res.data.accessToken){
+              setLoading(false)
+              sessionStorage.setItem('accessToken', res.data.accessToken)
+              sessionStorage.setItem('refreshToken', res.data.refreshToken)
+              setErrorMsg('')
+              navigate('/dashboard')
+          }
+          else{
+              if(res.data.status === 'fail'){
+                  setLoading(false)
+                  setErrorMsg(res.data.error)
+              }
+              else{
+                  setLoading(false)
+                  setErrorMsg('Network Error. Please try again')
+              }
+          }
+      })
       
   };
+
+  useEffect(() => {
+    if(checkAuth()){
+      navigate('/dashboard')
+    }
+
+    const base = window.location.href
+    let nohttp = ""
+    let bare = ""
+    if(base.includes('http')){
+      nohttp = base.replace('http://', '')
+      bare = nohttp.split('/', 1)[0]
+      setDomain(`http://${bare}`)
+      console.log("HERE: ",  domain)
+    }
+    if(base.includes('https')){
+      nohttp = base.replace('https://', '')
+      bare = nohttp.split('/', 1)[0]
+      setDomain(`https://${bare}`)
+      console.log("HERE: ",  domain)
+    }
+
+  }, [])
 
 
   return (
@@ -73,8 +123,8 @@ const LoginPage = () => {
         >
           Login
         </button>
-        <p className="text-center mt-4 cursor-pointer text-[#E6EDF3] hover:underline lg:text-[12px]">
-          Dont have an account ? <span className="text-[#2F81E9] font-bold">sign uo</span>
+        <p onClick={signupnav} className="text-center mt-4 cursor-pointer text-[#E6EDF3] hover:underline lg:text-[12px]">
+          Dont have an account ? <span className="text-[#2F81E9] font-bold">sign up</span>
         </p>
       </form>
       <div>
