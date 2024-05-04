@@ -18,6 +18,7 @@ const Print = (props) => {
   const [file, setFile] = useState(null)
   const [active, setActive] = useState(false)
   const [domain, setDomain] = useState('')
+  const [error, setError] = useState('')
 
   const [pageNum, setPageNum] = useState(0)
   const [cost, setCost] = useState(pageNum * 50)
@@ -53,6 +54,11 @@ const Print = (props) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+    
+    if(cost > credits){
+      setError('Insufficient funds')
+      return
+    }
 
     const config = {
       headers: {
@@ -66,6 +72,10 @@ const Print = (props) => {
     const response = await axios.post(`${domain}/printdoc`, formData, config)
     if(response.data.status === "success"){
       window.location.reload()
+    }
+    if(response.data.status === "fail"){
+      setError(response.data.error)
+      return
     }
   }
 
@@ -93,7 +103,7 @@ const Print = (props) => {
 
   return (
     <div className=' text-white flex flex-col justify-center items-center  w-full '>
-            <h2 className='text-[25px] text-center text-[#E6EDF3] lg:text-[20px] lg:mb-[20px] '>Welcome {matric}</h2>
+          <h2 className='text-[25px] text-center text-[#E6EDF3] lg:text-[20px] lg:mb-[20px] '>Welcome {matric}</h2>
 
           <form className=" w-10/12 py-[1rem] mt-[2rem] flex flex-col gap-[10px] lg:gap-[10px] items-center bg-[#161B22] lg:w-[20%] lg:mt-[1rem] rounded-[10px] ">
             <div className=" w-11/12 gap-[7px]  flex flex-col items-center justify-between">
@@ -136,15 +146,19 @@ const Print = (props) => {
                 className="h-[25px] w-full py-5 px-4 text-white rounded-[8px] outline-none bg-[#0D1117] focus:bg-[#0D1117] border-b-4 border-[#30363D] lg:text-[14px]"
               />
             </div>
-        <button
-        
-        onClick={handleSubmit}
-          className={file === null ? style1 : style2}
-        >
-          Submit
-        </button>
-      </form>
-    </div>
+            <button
+            onClick={handleSubmit}
+              className={file === null ? style1 : style2}
+            >
+              Submit
+            </button>
+            <div>
+              <p className="text-red-500 ">
+                {error}
+              </p>
+            </div>
+          </form>
+        </div>
   )
 }
 
