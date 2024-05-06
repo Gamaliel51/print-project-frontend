@@ -40,12 +40,12 @@ const Dashboard = () => {
       if(base.includes('http')){
         nohttp = base.replace('http://', '')
         bare = nohttp.split('/', 1)[0]
-        setDomain(`http://localhost:8000`)
+        setDomain(`http://${bare}`)
       }
       if(base.includes('https')){
         nohttp = base.replace('https://', '')
         bare = nohttp.split('/', 1)[0]
-        setDomain(`https://localhost:8000`)
+        setDomain(`https://${bare}`)
       }
 
       const config = {
