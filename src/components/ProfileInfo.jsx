@@ -1,16 +1,20 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { getAllBanks } from "./utils"
 
 
 const ProfileInfo = () => {
 
     const navigate = useNavigate()
+    const banks = getAllBanks()
 
     const [matric, setMatric] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [password2, setPassword2] = useState('')
+    const [account, setAccount] = useState('')
+    const [bank, setBank] = useState('')
     const [domain, setDomain] = useState('')
 
     const [inputState, setInputState] = useState(true)
@@ -52,7 +56,7 @@ const ProfileInfo = () => {
         }
 
         setErrorMsg('')
-        axios.post(`${domain}/auth/update`, {username: matric, password: password, email: email}, config)
+        axios.post(`${domain}/auth/update`, {username: matric, password: password, email: email, account: account, bank: bank}, config)
         .then((response) => {
             if(response.data.status === "success"){
                 logout()
@@ -74,13 +78,13 @@ const ProfileInfo = () => {
         if(base.includes('http')){
             nohttp = base.replace('http://', '')
             bare = nohttp.split('/', 1)[0]
-            setDomain(`http://${bare}`)
+            setDomain(`http://localhost:8000`)
             console.log("HERE: ",  domain)
         }
         if(base.includes('https')){
             nohttp = base.replace('https://', '')
             bare = nohttp.split('/', 1)[0]
-            setDomain(`https://${bare}`)
+            setDomain(`https://localhost:8000`)
             console.log("HERE: ",  domain)
         }
 
@@ -96,6 +100,8 @@ const ProfileInfo = () => {
             if(res.data.status === "success"){
               setMatric(res.data.matric)
               setEmail(res.data.email)
+              setAccount(res.data.account)
+              setBank(res.data.bank)
             }
             else{
                 setErrorMsg(res.data.error)
@@ -138,6 +144,44 @@ const ProfileInfo = () => {
                         />
                     </div>
                 </div>
+
+                <div className="w-full flex flex-row justify-evenly">
+                    <div className=" w-2/5 gap-[7px]  flex flex-col items-center justify-between">
+                        <label htmlFor="account" className="text-[#E6EDF3] w-full font-[400] text-[15px] lg:font-[300] lg:text-[13px] ">
+                            Account:
+                        </label>
+                        <input
+                            id="account"
+                            name="account"
+                            type="text"
+                            autoComplete="off"
+                            value={account}
+                            onChange={(e) => setAccount(e.target.value)}
+                            readOnly={inputState}
+                            className="h-[25px] w-full py-5 px-4 text-white rounded-[8px] outline-none bg-[#0D1117] focus:bg-[#0D1117] border border-[#30363D] lg:text-[14px]"
+                        />
+                    </div>
+                    <div className=" w-2/5 gap-[7px]  flex flex-col items-center justify-between">
+                        <label htmlFor="bank" className="text-[#E6EDF3] w-full font-[400] text-[15px] lg:font-[300] lg:text-[13px] ">
+                            Bank
+                        </label>
+                        <select
+                        id="bank"
+                        name="bank"
+                        value={bank}
+                        disabled={inputState}
+                        onChange={(e) => setBank(e.target.value)}
+                        className="h-[25px] w-full py-5 px-4 text-white rounded-[8px] outline-none bg-[#0D1117] focus:bg-[#0D1117] border border-[#30363D] lg:text-[14px]"
+                        >
+                            {banks.map((bank2) => {
+                                return(
+                                    <option id={bank2.id} value={bank2.code} className="h-full w-full text-center" selected={bank === bank2.code}>{bank2.name}</option>
+                                )
+                            })}
+                        </select>
+                    </div>
+                </div>
+
                 <div className="w-full flex flex-row justify-evenly">
                     <div className=" w-2/5 gap-[7px]  flex flex-col items-center justify-between">
                         <label htmlFor="password" className="text-[#E6EDF3] w-full font-[400] text-[15px] lg:font-[300] lg:text-[13px] ">

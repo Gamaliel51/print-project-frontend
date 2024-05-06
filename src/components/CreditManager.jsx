@@ -1,5 +1,6 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3'
+import axios from "axios"
 
 
 const CreditManager = (props) => {
@@ -10,9 +11,17 @@ const CreditManager = (props) => {
     const key = process.env.FLUTTERWAVE_KEY
 
     const [amount, setAmount] = useState('')
+    const [domain, setDomain] = useState('')
+    const [success, setSuccess] = useState('')
+    const [error, setError] = useState('')
 
     const fundWallet = (event) => {
         event.preventDefault()
+
+        if(amount === ''){
+            setError('enter amount to fund')
+            return
+        }
 
         const config = {
             public_key: key,
@@ -34,6 +43,48 @@ const CreditManager = (props) => {
 
         return useFlutterwave(config)
     }
+
+    const withdrawFunds = async (event) => {
+        event.preventDefault()
+
+        if(amount === ''){
+            setError('enter amount to withdraw')
+            return
+        }
+
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${sessionStorage.getItem('accessToken')}`,
+            }
+        }
+
+        const res = await axios.post(`${domain}/withdraw`, {amount: amount}, config)
+        if(res.data.status === "success"){
+            setSuccess("withdrawal successful")
+        }
+        if(res.data.status === "fail"){
+            setError(res.data.error)
+        }
+
+    }
+
+    useEffect(() => {
+        const base = window.location.href
+        let nohttp = ""
+        let bare = ""
+        if(base.includes('http')){
+            nohttp = base.replace('http://', '')
+            bare = nohttp.split('/', 1)[0]
+            setDomain(`http://localhost:8000`)
+            console.log("HERE: ",  domain)
+        }
+        if(base.includes('https')){
+            nohttp = base.replace('https://', '')
+            bare = nohttp.split('/', 1)[0]
+            setDomain(`https://localhost:8000`)
+            console.log("HERE: ",  domain)
+        }
+    }, [])
 
     return(
         <div className="w-full mt-14 flex flex-col items-center justify-center bg-[#0D1117]">
@@ -66,10 +117,21 @@ const CreditManager = (props) => {
                 Fund Wallet
                 </button>
                 <button
+                onClick={withdrawFunds}
                 className=" h-[30px] w-11/12 flex justify-center items-center py-5 rounded-[8px] bg-[#2EA043] text-white font-[500] text-[18px] lg:font-[500]  lg:text-[15px] lg:h-[30px] lg:rounded-[5px] "
                 >
                 Withdraw
                 </button>
+                <div>
+                    <p className="text-red-500 ">
+                        {error}
+                    </p>
+                </div>
+                <div>
+                    <p className="text-green-500 ">
+                        {success}
+                    </p>
+                </div>
             </form>
         </div>
     )

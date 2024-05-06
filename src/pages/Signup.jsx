@@ -1,17 +1,21 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { getAllBanks } from "../components/utils"
 
 
 
 const SignupPage = () => {
 
     const navigate = useNavigate()
+    const banks = getAllBanks()
 
     const [matric, setMatric] = useState('')
     const [password, setPassword] = useState('')
     const [password2, setPassword2] = useState('')
     const [email, setEmail] = useState('')
+    const [account, setAccount] = useState('')
+    const [bank, setBank] = useState('')
 
     const [domain, setDomain] = useState('')
 
@@ -39,7 +43,7 @@ const SignupPage = () => {
         }
 
         setErrorMsg('')
-        axios.post(`${domain}/auth/signup`, {username: matric, password: password, email: email})
+        axios.post(`${domain}/auth/signup`, {username: matric, password: password, email: email, account: account, bank: bank})
         .then((response) => {
             if(response.data.status === "success"){
                 navigate('/login')
@@ -60,13 +64,13 @@ const SignupPage = () => {
         if(base.includes('http')){
             nohttp = base.replace('http://', '')
             bare = nohttp.split('/', 1)[0]
-            setDomain(`http://${bare}`)
+            setDomain(`http://localhost:8000`)
             console.log("HERE: ",  domain)
         }
         if(base.includes('https')){
             nohttp = base.replace('https://', '')
             bare = nohttp.split('/', 1)[0]
-            setDomain(`https://${bare}`)
+            setDomain(`https://localhost:8000`)
             console.log("HERE: ",  domain)
         }
     }, [])
@@ -130,6 +134,33 @@ const SignupPage = () => {
                     onChange={(e) => setPassword2(e.target.value)}
                     className="h-[25px] w-full py-5 px-4 text-white rounded-[8px] outline-none bg-[#0D1117] border border-[#30363D] lg:text-[10px]"
                 />
+                </div>
+
+                <div className=" w-11/12 gap-[7px]  flex flex-col items-center justify-between">
+                <label htmlFor="account" className="text-[#E6EDF3] w-full font-[400] text-[15px] lg:font-[300] lg:text-[13px]">
+                    Account Number:
+                </label>
+                <input
+                    id="account"
+                    name="account"
+                    type="text"
+                    value={account}
+                    onChange={(e) => setAccount(e.target.value)}
+                    className="h-[25px] w-full py-5 px-4 text-white rounded-[8px] outline-none bg-[#0D1117] border border-[#30363D] lg:text-[10px]"
+                />
+                </div>
+
+                <div className=" w-11/12 gap-[7px]  flex flex-col items-center justify-between">
+                <label htmlFor="bank" className="text-[#E6EDF3] w-full font-[400] text-[15px] lg:font-[300] lg:text-[13px]">
+                    Bank:
+                </label>
+                <select name="bank" id="bank" value={bank} onChange={(e) => setBank(e.target.value)} className="h-[25px] w-full py-5 px-4 text-white rounded-[8px] outline-none bg-[#0D1117] border border-[#30363D] lg:text-[10px]">
+                    {banks.map((bank) => {
+                        return(
+                            <option id={bank.id} value={bank.code} className="h-full w-full text-center">{bank.name}</option>
+                        )
+                    })}
+                </select>
                 </div>
             
                 <button
