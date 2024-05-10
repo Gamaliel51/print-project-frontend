@@ -70,6 +70,7 @@ const Print = (props) => {
 
     const formData = new FormData()
     formData.append('matric', matric)
+    formData.append('location', currentLocation)
     formData.append('files', file)
     const response = await axios.post(`${domain}/printdoc`, formData, config)
     if(response.data.status === "success"){
