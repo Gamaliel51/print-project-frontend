@@ -87,6 +87,10 @@ const Print = (props) => {
   }, [file])
 
   useEffect(() => {
+    setCurrentLocation[locations[0]]
+  }, [locations])
+
+  useEffect(() => {
     const base = window.location.href
     let nohttp = ""
     let bare = ""
