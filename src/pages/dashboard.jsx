@@ -15,6 +15,7 @@ const Dashboard = () => {
   const [credits, setCredits] = useState(0)
   const [email, setEmail] = useState('')
   const [history, setHistory] = useState([])
+  const [loc, setLoc] = useState([])
 
   const [domain, setDomain] = useState('')
   
@@ -40,12 +41,12 @@ const Dashboard = () => {
       if(base.includes('http')){
         nohttp = base.replace('http://', '')
         bare = nohttp.split('/', 1)[0]
-        setDomain(`http://${bare}`)
+        setDomain(`http://localhost:8000`)
       }
       if(base.includes('https')){
         nohttp = base.replace('https://', '')
         bare = nohttp.split('/', 1)[0]
-        setDomain(`https://${bare}`)
+        setDomain(`https://localhost:8000`)
       }
 
       const config = {
@@ -61,6 +62,14 @@ const Dashboard = () => {
           setCredits(res.data.credits)
           setEmail(res.data.email)
           setHistory(res.data.history)
+        }
+      })
+
+      axios.get(`${domain}/getlocations`)
+      .then((res) => {
+        if(res.data.status === 'success'){
+          console.log(res.data)
+          setLoc(res.data.data)
         }
       })
     }
@@ -84,7 +93,7 @@ const Dashboard = () => {
       </nav>
       <section className="flex-1 flex items-center justify-center">
         {
-            !tab ? <Print matric={matric} email={email} credits={credits}/> : <ProfilePage matric={matric} email={email} credits={credits} history={history}/>
+            !tab ? <Print matric={matric} email={email} credits={credits} locations={loc}/> : <ProfilePage matric={matric} email={email} credits={credits} history={history}/>
         }
        
       </section>

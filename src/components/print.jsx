@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 const Print = (props) => {
 
   const navigate = useNavigate()
+  const loc = props.locations
 
   const matric = props.matric
   const email = props.email
@@ -17,6 +18,8 @@ const Print = (props) => {
 
   const [file, setFile] = useState(null)
   const [active, setActive] = useState(false)
+  const [currentLocation, setCurrentLocation] = useState('')
+  const [locations, setLocations] = useState(loc)
   const [domain, setDomain] = useState('')
   const [error, setError] = useState('')
 
@@ -90,15 +93,16 @@ const Print = (props) => {
     if(base.includes('http')){
       nohttp = base.replace('http://', '')
       bare = nohttp.split('/', 1)[0]
-      setDomain(`http://${bare}`)
+      setDomain(`http://localhost:8000`)
       console.log("HERE: ",  domain)
     }
     if(base.includes('https')){
       nohttp = base.replace('https://', '')
       bare = nohttp.split('/', 1)[0]
-      setDomain(`https://${bare}`)
+      setDomain(`https://localhost:8000`)
       console.log("HERE: ",  domain)
     }
+
   }, [])
 
   return (
@@ -146,6 +150,18 @@ const Print = (props) => {
                 className="h-[25px] w-full py-5 px-4 text-white rounded-[8px] outline-none bg-[#0D1117] focus:bg-[#0D1117] border-b-4 border-[#30363D] lg:text-[14px]"
               />
             </div>
+            <div className=" w-11/12 gap-[7px]  flex flex-col items-center justify-between">
+                <label htmlFor="location" className="text-[#E6EDF3] w-full font-[400] text-[15px] lg:font-[300] lg:text-[13px]">
+                    Location:
+                </label>
+                <select name="location" id="location" value={currentLocation} onChange={(e) => setCurrentLocation(e.target.value)} className="h-[25px] w-full py-5 px-4 text-white rounded-[8px] outline-none bg-[#0D1117] border border-[#30363D] lg:text-[10px]">
+                    {locations.map((location) => {
+                        return(
+                            <option key={location} id={location} value={location} className="h-full w-full text-center">{location}</option>
+                        )
+                    })}
+                </select>
+                </div>
             <button
             onClick={handleSubmit}
               className={file === null ? style1 : style2}

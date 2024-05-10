@@ -1,23 +1,18 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import {  useNavigate } from "react-router-dom";
-import { checkAuth } from "../components/utils";
 
-const LoginPage = () => {
+
+const AdminLoginPage = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    matric: '', password: ''
+    username: '', password: ''
   });
   const [errorMsg, setErrorMsg] = useState('')
   const [loading, setLoading] = useState(false)
   const [domain, setDomain] = useState('')
 
-  const matricPattern = /2[0-9]c[abcdefgh]02[0-9][0-9][0-9][0-9]/i
-
-  const signupnav = () => {
-    navigate('/signup')
-  }
 
   const handleChhange = (e) => {
     const {name, value} = e.target
@@ -28,22 +23,21 @@ const LoginPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    const {matric,password} = formData
+    const {username,password} = formData
 
-    if(!matricPattern.test(matric)){
-      setErrorMsg('Invalid Matric')
+    if(username === ''){
+      setErrorMsg('Invalid Username')
       return
     } 
 
-    axios.post(`${domain}/auth/login`, {username: matric, password: password})
+    axios.post(`${domain}/adminlogin`, {username: username, password: password})
       .then((res) => {
         console.log("HERE", res.data)
-          if(res.data.accessToken){
+          if(res.data.status === 'success'){
               setLoading(false)
-              sessionStorage.setItem('accessToken', res.data.accessToken)
-              sessionStorage.setItem('refreshToken', res.data.refreshToken)
+              sessionStorage.setItem('adminToken', "adminloggedin")
               setErrorMsg('')
-              navigate('/dashboard')
+              navigate('/admindashboard')
           }
           else{
               if(res.data.status === 'fail'){
@@ -60,8 +54,8 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    if(checkAuth()){
-      navigate('/dashboard')
+    if(sessionStorage.getItem('adminToken')){
+      navigate('/admindashboard')
     }
 
     const base = window.location.href
@@ -86,19 +80,19 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-[#0D1117]">
       <h1 className="text-[30px] text-center text-[#E6EDF3] lg:text-[20px]  ">
-        <img src="/assets/cu-logo.png" alt="" className='h-16 w-16'/>CUPrint
+        <img src="/assets/cu-logo.png" alt="" className='h-16 w-16'/>Admin
       </h1>
       <form className=" w-10/12 py-[2rem] mt-[3rem] flex flex-col gap-[1rem] items-center bg-[#161B22] lg:w-[20%] lg:mt-[1rem] rounded-[10px] ">
         <div className=" w-11/12 gap-[7px]  flex flex-col items-center justify-between">
-          <label htmlFor="matric" className="text-[#E6EDF3] w-full font-[400] text-[15px] lg:font-[300] lg:text-[13px] ">
-            Matric No
+          <label htmlFor="username" className="text-[#E6EDF3] w-full font-[400] text-[15px] lg:font-[300] lg:text-[13px] ">
+            Username
           </label>
           <input
-            id="matric"
-            name="matric"
+            id="username"
+            name="username"
             type="text"
             autoComplete="off"
-            value={formData.matric}
+            value={formData.username}
             onChange={handleChhange}
             className="h-[25px] w-full py-5 px-4 text-white rounded-[8px] outline-none bg-[#0D1117] focus:bg-[#0D1117] border border-[#30363D] lg:text-[14px]"
           />
@@ -123,9 +117,6 @@ const LoginPage = () => {
         >
           Login
         </button>
-        <p onClick={signupnav} className="text-center mt-4 cursor-pointer text-[#E6EDF3] hover:underline lg:text-[12px]">
-          Dont have an account ? <span className="text-[#2F81E9] font-bold">sign up</span>
-        </p>
       </form>
       <div>
         <p className="text-red-500 ">
@@ -136,4 +127,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default AdminLoginPage;
