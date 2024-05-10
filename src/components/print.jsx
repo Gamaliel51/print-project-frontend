@@ -19,7 +19,7 @@ const Print = (props) => {
   const [file, setFile] = useState(null)
   const [active, setActive] = useState(false)
   const [currentLocation, setCurrentLocation] = useState('')
-  const [locations, setLocations] = useState(loc)
+  const [locations, setLocations] = useState([])
   const [domain, setDomain] = useState('')
   const [error, setError] = useState('')
 
@@ -82,6 +82,17 @@ const Print = (props) => {
     }
   }
 
+  const renderOptions = () => {
+    const temp = []
+    for(let i = 0; i < locations.length; i++){
+      temp.push(
+        <option key={i} id={locations[i]} value={locations[i]} className="h-full w-full text-center">{locations[i]}</option>
+      )
+    }
+
+    return temp
+  }
+
   useEffect(() => {
     setFileDetails()
   }, [file])
@@ -102,6 +113,8 @@ const Print = (props) => {
       setDomain(`https://${bare}`)
       console.log("HERE: ",  domain)
     }
+
+    setLocations(loc)
 
   }, [])
 
@@ -155,11 +168,7 @@ const Print = (props) => {
                     Location:
                 </label>
                 <select name="location" id="location" value={currentLocation} onChange={(e) => setCurrentLocation(e.target.value)} className="h-[25px] w-full py-5 px-4 text-white rounded-[8px] outline-none bg-[#0D1117] border border-[#30363D] lg:text-[10px]">
-                    {locations.map((location) => {
-                        return(
-                            <option key={location} id={location} value={location} className="h-full w-full text-center">{location}</option>
-                        )
-                    })}
+                    {renderOptions()}
                 </select>
                 </div>
             <button
