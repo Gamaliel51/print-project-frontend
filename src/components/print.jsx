@@ -87,10 +87,6 @@ const Print = (props) => {
   }, [file])
 
   useEffect(() => {
-    setCurrentLocation[locations[0]]
-  }, [locations])
-
-  useEffect(() => {
     const base = window.location.href
     let nohttp = ""
     let bare = ""
@@ -111,6 +107,7 @@ const Print = (props) => {
     .then((res) => {
       if(res.data.status === 'success'){
         console.log(res.data)
+        setCurrentLocation(res.data.data[0])
         setLocations(res.data.data)
       }
     })
