@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom'
 const Print = (props) => {
 
   const navigate = useNavigate()
-  const loc = props.locations
 
   const matric = props.matric
   const email = props.email
@@ -82,17 +81,6 @@ const Print = (props) => {
     }
   }
 
-  const renderOptions = () => {
-    const temp = []
-    for(let i = 0; i < locations.length; i++){
-      temp.push(
-        <option key={i} id={locations[i]} value={locations[i]} className="h-full w-full text-center">{locations[i]}</option>
-      )
-    }
-
-    return temp
-  }
-
   useEffect(() => {
     setFileDetails()
   }, [file])
@@ -114,7 +102,13 @@ const Print = (props) => {
       console.log("HERE: ",  domain)
     }
 
-    setLocations(loc)
+    axios.get(`${domain}/getlocations`)
+    .then((res) => {
+      if(res.data.status === 'success'){
+        console.log(res.data)
+        setLocations(res.data.data)
+      }
+    })
 
   }, [])
 
@@ -168,7 +162,11 @@ const Print = (props) => {
                     Location:
                 </label>
                 <select name="location" id="location" value={currentLocation} onChange={(e) => setCurrentLocation(e.target.value)} className="h-[25px] w-full py-5 px-4 text-white rounded-[8px] outline-none bg-[#0D1117] border border-[#30363D] lg:text-[10px]">
-                    {renderOptions()}
+                    {locations.map((location, key) => {
+                        return(
+                            <option key={key} id={location} value={location} className="h-full w-full text-center">{location}</option>
+                        )
+                    })}
                 </select>
                 </div>
             <button
