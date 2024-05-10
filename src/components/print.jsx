@@ -107,7 +107,6 @@ const Print = (props) => {
     .then((res) => {
       if(res.data.status === 'success'){
         console.log(res.data)
-        setCurrentLocation(res.data.data[0])
         setLocations(res.data.data)
       }
     })
