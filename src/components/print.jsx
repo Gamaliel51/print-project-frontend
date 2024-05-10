@@ -164,6 +164,7 @@ const Print = (props) => {
                     Location:
                 </label>
                 <select name="location" id="location" value={currentLocation} onChange={(e) => setCurrentLocation(e.target.value)} className="h-[25px] w-full py-5 px-4 text-white rounded-[8px] outline-none bg-[#0D1117] border border-[#30363D] lg:text-[10px]">
+                  <option id="null" value="" className="h-full w-full text-center"></option>
                     {locations.map((location, key) => {
                         return(
                             <option key={key} id={location} value={location} className="h-full w-full text-center">{location}</option>
