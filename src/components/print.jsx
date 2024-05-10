@@ -72,7 +72,7 @@ const Print = (props) => {
     formData.append('matric', matric)
     formData.append('location', currentLocation)
     formData.append('files', file)
-    const response = await axios.post(`${domain}/printdoc`, formData, config)
+    const response = await axios.post(`${domain}/printdoc/${currentLocation}`, formData, config)
     if(response.data.status === "success"){
       window.location.reload()
     }
